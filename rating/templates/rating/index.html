@@ -1,24 +1,35 @@
 {% extends 'rating/_base_template.html' %}
 
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block sidebar %}
+
+    {% if my_groups_list %}
 
 
+      {% for group in my_groups_list %}
+          <li class="nav-item">
+                <a class="nav-link" href="{% url 'group-detail' pk=group.pk %}"><span data-feather="users"></span>{{ group.name }} група</a>
+              </li>
+      {% endfor %}
+
+    {% endif %}
+
+
+
+                    {% endblock %}
 
 
 {% block content %}
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2">{% block h1 %}Домашня{% endblock %}</h1>
+            <h1 class="h2">{% block h1 %}ВІТАЮ ! {% endblock %}</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 {% block buttons %}
-              <div class="btn-group mr-2">
-                <button class="btn btn-sm btn-outline-secondary">Share</button>
-                <button class="btn btn-sm btn-outline-secondary">Export</button>
-              </div>
-              <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar"></span>
-                This week
-              </button>
+
                     {% endblock %}
             </div>
 
@@ -26,7 +37,19 @@
 
         {% block main %}
 
-    Тут має бути щось цікаве )
-            {% endblock %}
+            {% if  user.is_active %}
+                <ul>
+                  <li>Username: {{ user.username }}</li>
+                  <li>Location: {{ user.profile.location }}</li>
+                  <li>Birth Date: {{ user.profile.birth_date }}</li>
+                </ul>
+            {% endif %}
+
+        {% endblock %}
+
  </main>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
 {% endblock %}

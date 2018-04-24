@@ -1,0 +1,92 @@
+{% extends 'rating/index.html' %}
+
+{% block head %}
+    {{ block.super }}
+    <link href="/static/css/jquery-ui.css" rel="stylesheet">
+    <link href="/static/css/jquery-confirm.css" rel="stylesheet">
+    <link href="/static/css/toastr.min.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block sidebar %}
+
+          <li class="nav-item">
+                <a class="nav-link" href="#"><span data-feather="users"></span>Блок 1</a>
+              </li>
+
+    <li class="nav-item">
+                <a class="nav-link" href="#"><span data-feather="users"></span>Блок 2</a>
+              </li>
+
+    <li class="nav-item">
+                <a class="nav-link" href="#"><span data-feather="users"></span>Блок 3</a>
+              </li>
+    <li class="nav-item">
+                <a class="nav-link" href="#"><span data-feather="users"></span>Блок 4</a>
+              </li>
+{% endblock %}
+
+{% block h1 %}Група {{ group.name }} {% endblock %}
+
+
+
+
+{% block buttons %}
+    {% if user.is_authenticated %}
+     <button class="btn btn-sm btn-outline-secondary" id="add-student">Додати студента</button>
+   {% endif %}
+
+
+{% endblock %}
+
+{% block main %}
+ {% if user.is_authenticated %}
+     <h2 class="h5">Куратор: <b>{{ group.curator }}</b></h2>
+
+     <div id="studentsDiv"></div>
+
+   {% else %}
+     <form method="post" action="{% url 'ajax-group-detail' pk=group.id %}">
+        {% csrf_token %}
+
+
+            <div>
+              Вітаю, <b>{{ group.curator }}</b>!
+
+            </div>
+
+            <div>
+               <td>Для продовження роботи введіть пароль</td>
+                <td><input type="hidden" name="user" value="{{ group.curator }}"></td>
+               <td><input type="password" name="pass"></td>
+            </div>
+
+            <div>
+              <input type="submit" value="Продовжити роботу" />
+              <input type="hidden" name="next" value='{{ next }}' />
+            </div>
+    </form>
+   {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/jquery-confirm.js"></script>
+    <script src="/static/js/toastr.min.js"></script>
+    <script src="/static/js/reytyng.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+
+        table_group_detail('{% url "ajax-group-detail" pk=group.id %}', '{{ group.name }}');
+        add_student("#add-student", '{% url "ajax-group-detail" pk=group.id %}', '{{ csrf_token }}', '{{ group.name }}');
+        local_message();
+        delete_stutent('{% url "ajax-student-delete" %}', '{{ csrf_token }}');
+
+    });
+
+    </script>
+{% endblock %}
