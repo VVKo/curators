@@ -11,7 +11,7 @@
 
       {% for group in my_groups_list %}
           <li class="nav-item">
-                <a class="nav-link" href="{% url 'group-detail' pk=group.pk %}"><span data-feather="users"></span>{{ group.name }} група</a>
+                <a class="nav-link" href=""><span data-feather="users"></span>{{ group.name }} група</a>
               </li>
       {% endfor %}
 
@@ -37,13 +37,29 @@
 
         {% block main %}
 
-            {% if  user.is_active %}
-                <ul>
-                  <li>Username: {{ user.username }}</li>
-                  <li>Location: {{ user.profile.location }}</li>
-                  <li>Birth Date: {{ user.profile.birth_date }}</li>
-                </ul>
-            {% endif %}
+            {% if user.is_authenticated %}
+     <h2 class="h5">Куратор: <b>{{ user.username }}</b></h2>
+                Ваша група знаходиться <a class="nav-link" href="{% url 'group' %}"><span data-feather="arrow-right"></span>тут</a>
+
+
+   {% else %}
+     <form method="post" action="{% url 'group' %}">
+        {% csrf_token %}
+            <div>
+               <td>Для продовження роботи введіть логін</td>
+                <td><input type="text" name="user"></td>
+            </div>
+         <div>
+                <td>та пароль</td>
+               <td><input type="password" name="pass"></td>
+            </div>
+
+            <div>
+              <input type="submit" value="Продовжити роботу" />
+              <input type="hidden" name="next" value='{{ next }}' />
+            </div>
+    </form>
+   {% endif %}
 
         {% endblock %}
 

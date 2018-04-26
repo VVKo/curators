@@ -236,7 +236,6 @@ function add_student(id_button, url, csrf, group) {
                         $.ajax({
                             url: url,
                             type: 'POST',
-                           // data: {'name': name, 'csrfmiddlewaretoken': csrf},
                             data: $('#add-res').serialize(),
                             success: function (response) {
                                 localStorage.setItem('result', response.success);
@@ -263,9 +262,10 @@ function add_student(id_button, url, csrf, group) {
     });
 }
 
-function delete_stutent(url, csrf) {
+
+function delete_student(url) {
     $('#studentsDiv').on('click','.delete-student', function () {
-        var student = $(this).attr('data-student-id');
+        var student_id = $(this).attr('data-student-id');
             $.confirm({
                 title: 'Видалення Студента',
                 content: 'Ви впевнені, що хочете видалити?',
@@ -276,8 +276,9 @@ function delete_stutent(url, csrf) {
                     $.ajax({
                         url: url,
                         type: 'POST',
-                        data: {'csrfmiddlewaretoken': csrf, 'student_id': student},
-                        success: function (response) {
+                        data: {'student_id':student_id},
+                        success: function (response, data) {
+                            console.log('bla-bla', $(this).attr('data-student-id'));
                             localStorage.setItem('result', response.success);
                                 if(response.success){
                                     localStorage.setItem('message', 'Студента з бази видалено успішно');

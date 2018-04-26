@@ -40,33 +40,11 @@
 {% endblock %}
 
 {% block main %}
- {% if user.is_authenticated %}
+
      <h2 class="h5">Куратор: <b>{{ group.curator }}</b></h2>
 
      <div id="studentsDiv"></div>
 
-   {% else %}
-     <form method="post" action="{% url 'ajax-group-detail' pk=group.id %}">
-        {% csrf_token %}
-
-
-            <div>
-              Вітаю, <b>{{ group.curator }}</b>!
-
-            </div>
-
-            <div>
-               <td>Для продовження роботи введіть пароль</td>
-                <td><input type="hidden" name="user" value="{{ group.curator }}"></td>
-               <td><input type="password" name="pass"></td>
-            </div>
-
-            <div>
-              <input type="submit" value="Продовжити роботу" />
-              <input type="hidden" name="next" value='{{ next }}' />
-            </div>
-    </form>
-   {% endif %}
 
 {% endblock %}
 
@@ -83,9 +61,11 @@
         table_group_detail('{% url "ajax-group-detail" pk=group.id %}', '{{ group.name }}');
         add_student("#add-student", '{% url "ajax-group-detail" pk=group.id %}', '{{ csrf_token }}', '{{ group.name }}');
         local_message();
-        delete_student('{% url "ajax-student-delete" %}', '{{ csrf_token }}');
+        delete_student('{% url "ajax-student-delete" %}');
 
     });
 
     </script>
+
+
 {% endblock %}
