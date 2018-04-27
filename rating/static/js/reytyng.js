@@ -150,7 +150,6 @@ function table_group_detail(url, group) {
 
 
 				var module = '';
-
 				$.each(res,function(index, value){
 					module = $(tr).clone();
                     var studId = value.id;
@@ -158,7 +157,7 @@ function table_group_detail(url, group) {
 					$(module).append(
                             $('<td>').text(index+1),
                             $('<td>').append(
-                                    $('<a>').attr('href', studId).attr('class', 'student').attr('student-id', studId).text(value.stud)),
+                                    $('<a>').attr('href', window.location.pathname + 'student/'+ studId).attr('class', 'student').attr('student-id', studId).text(value.stud)),
                             $('<td>').text(group),
                             $('<td>').append($('<button>').attr('data-feather', 'trash').attr('data-student-id',studId).attr('class', 'delete-student'),
                             $('<button>').attr('data-feather', 'edit').attr('data-student-id', studId).attr('class', 'edit-student'))
