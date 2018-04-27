@@ -10,6 +10,7 @@ urlpatterns = [
     # path(r'login/', auth_views.login, {'authentication_form': CustomAuthenticationForm}, name='login'),
     path(r'logout/', views.logout_view, {'next_page': '/'}, name='logout'),
     path(r'group/', views.group,  name='group'),
+    path(r'group/student/', views.student,  name='student'),
     # path(r'group/<int:pk>', views.GroupDetailView.as_view(),  name='group-detail'),
     path(r'ajax/group/<int:pk>', views.ajax_group, name='ajax-group-detail'),
     path(r'group/ajax/student/delete', views.ajax_student_delete, name='ajax-student-delete'),

@@ -16,6 +16,18 @@ import json
 
 
 @csrf_exempt
+def student(request):
+    if request.user.is_authenticated:
+        gr = Group.objects.get(curator=request.user.id)
+        return render(request, 'rating/student.html', {'group': gr})
+    else:
+        return render(request,
+                      'rating/index.html',
+                      {}
+                      )
+
+
+@csrf_exempt
 def group(request):
     if request.method == 'POST':
         username = request.POST['user']

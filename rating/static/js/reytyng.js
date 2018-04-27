@@ -159,7 +159,7 @@ function table_group_detail(url, group) {
 					$(module).append(
                             $('<td>').text(index+1),
                             $('<td>').append(
-                                    $('<a>').attr('href', window.location.pathname + '/' + value.id).text(value.stud)),
+                                    $('<a>').attr('href', window.location.pathname + 'student/').attr('class', 'student').attr('student-id', studId).text(value.stud)),
                             $('<td>').text(group),
                             $('<td>').append($('<button>').attr('data-feather', 'trash').attr('data-student-id',studId).attr('class', 'delete-student'),
                             $('<button>').attr('data-feather', 'edit').attr('data-student-id', studId).attr('class', 'edit-student'))
@@ -299,6 +299,15 @@ function delete_student(url) {
 
             }
             })
+    });
+
+
+}
+
+function student() {
+    $('#studentsDiv').on('click','.student', function () {
+        var student_id = $(this).attr('student-id');
+            alert(student_id)
     });
 
 
