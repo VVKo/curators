@@ -16,10 +16,17 @@ import json
 
 
 @csrf_exempt
-def student(request):
+def student(request, pk):
+
     if request.user.is_authenticated:
         gr = Group.objects.get(curator=request.user.id)
-        return render(request, 'rating/student.html', {'group': gr})
+        try:
+            stud = Student.objects.get(pk=pk, group=gr.id)
+        except:
+            return render(request, 'rating/group.html', {'group': gr})
+
+        return render(request, 'rating/student.html', {'student': stud})
+
     else:
         return render(request,
                       'rating/index.html',
