@@ -5,6 +5,7 @@
     <link href="/static/css/jquery-ui.css" rel="stylesheet">
     <link href="/static/css/jquery-confirm.css" rel="stylesheet">
     <link href="/static/css/toastr.min.css" rel="stylesheet">
+    <link href="/static/css/rating.css" rel="stylesheet">
 {% endblock %}
 
 
@@ -62,7 +63,7 @@
         add_student("#add-student", '{% url "ajax-group-detail" pk=group.id %}', '{{ csrf_token }}', '{{ group.name }}');
         local_message();
         delete_student('{% url "ajax-student-delete" %}');
-        student();
+        add_mark_subject('{% url "ajax-add-mark-subject" %}', '{{ csrf_token }}')
 
     });
 

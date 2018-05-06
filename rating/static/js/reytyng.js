@@ -136,15 +136,35 @@ function table_group_detail(url, group) {
                     $('<tr>')
                         .append(
                             $('<th>').text('#'),
-                            $('<th>').text('ПІП'),
-                                $('<th>').text('Група'),
-                            $('<th>').text('Різне')
+                            $('<th>').text('ПІП')
+
                         )
                 ),
             $('<tbody>')
 
         )
                     );
+
+				var th = $('<th>').attr('class', 'rotate');
+                var header='';
+
+                console.log(res[0]['subjects']);
+				$.each(res[0]['subjects'],function(index, value){
+                    header= $(th).clone();
+                    console.log(value.subject);
+					$(header).append(
+                            $('<div>').text(value.subject)
+                        );
+
+                    console.log(header);
+                $(div).find('tr').append(header);
+				});
+
+                $(div).find('tr').append(
+                    $('<th>').attr('class', 'rotate').append($('<div>').text('Рейтинг 1')),
+                    $('<th>').attr('class', 'rotate').append($('<div>').text('Рейтинг 2')),
+                    $('<th>').attr('class', 'rotate').append($('<div>').text('Рейтинг загалом')),
+                    $('<th>').attr('class', 'rotate').append($('<div>').text('Різне')));
 
 				var tr = $('<tr>');
 
@@ -157,8 +177,23 @@ function table_group_detail(url, group) {
 					$(module).append(
                             $('<td>').text(index+1),
                             $('<td>').append(
-                                    $('<a>').attr('href', window.location.pathname + 'student/'+ studId).attr('class', 'student').attr('student-id', studId).text(value.stud)),
-                            $('<td>').text(group),
+                                    $('<a>').attr('href', window.location.pathname + 'student/'+ studId).attr('class', 'student').attr('student-id', studId).text(value.stud))
+                            );
+					$.each(res[index]['marks'], function (idx, val) {
+					    //console.log('val', val);
+                        $(module).append(
+                            $('<td>')
+                                .append(
+                                    $('<a>')
+                                        .attr('class', 'add-mark-subject')
+                                        .attr('add-mark-student-id', studId)
+                                        .attr('add-mark-subject-id', val.subj_id).text(val.mark)))
+                    });
+
+					$(module).append(
+					        $('<td>').text(value.rating.rating_first),
+                            $('<td>').text(value.rating.rating_second),
+                            $('<td>').text(value.rating.rating_total),
                             $('<td>').append($('<button>').attr('data-feather', 'trash').attr('data-student-id',studId).attr('class', 'delete-student'),
                             $('<button>').attr('data-feather', 'edit').attr('data-student-id', studId).attr('class', 'edit-student'))
                         );
@@ -167,6 +202,65 @@ function table_group_detail(url, group) {
 				});
 
 				$('#studentsDiv').append(div);
+				feather.replace()
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+
+}
+
+function table_block_one(url, group) {
+    $.ajax({
+			url : url,
+			type : 'GET',
+            //dataType: 'json',
+            //data: data,
+			success: function(res){
+				var div = $('<div>')
+                    .attr('class', 'table-responsive')
+                    .append($('<table>')
+        .attr('class', 'table table-striped table-sm')
+        .append(
+            $('<thead>')
+                .append(
+                    $('<tr>')
+                        .append(
+                            $('<th>').text('#'),
+                            $('<th>').text('Предмет'),
+                                $('<th>').attr('class', 'rotate').append($('<div>').text('Семестр')),
+                            $('<th>').attr('class', 'rotate').append($('<div>').text('Бали')),
+                            $('<th>').text('Різне')
+                        )
+                ),
+            $('<tbody>')
+
+        )
+                    );
+
+				var tr = $('<tr>');
+
+
+				var module = '';
+
+				$.each(res['block_one'],function(index, value){
+					module = $(tr).clone();
+                    var studId = value.id;
+
+					$(module).append(
+                            $('<td>').text(index+1),
+                            $('<td>').text(value.subject),
+                            $('<td>').text(value.semester),
+                            $('<td>').text(value.mark),
+                            $('<td>').append($('<button>').attr('data-feather', 'trash').attr('data-student-id',studId).attr('class', 'delete-student'),
+                            $('<button>').attr('data-feather', 'edit').attr('data-student-id', studId).attr('class', 'edit-student'))
+                        );
+					$(div).find('tbody').append(module);
+
+				});
+
+				$('#blockOneDiv').append(div);
 				feather.replace()
 			},
 			error: function(error){
@@ -292,6 +386,101 @@ function delete_student(url) {
                 'Відхилити':{
                     action: function () {
                         toastr.info('Delete Cancelled');
+                    }
+                }
+
+            }
+            })
+    });
+
+
+}
+
+function add_mark_subject(url, csrf) {
+    $('#studentsDiv').on('click','.add-mark-subject', function () {
+        var subject_id = $(this).attr('add-mark-subject-id');
+        var student_id = $(this).attr('add-mark-student-id');
+            $.confirm({
+                title: 'Редагування оцінти',
+                theme: 'material',
+                content: function () {
+                var self = this;
+                return $.ajax({
+                    url: url,
+                    data: {'student_id': student_id,},
+                    dataType: 'json',
+                    type: 'get'
+                }).done(function (res) {
+                    var mark =0; var subj;
+                    $.each(res['block_one'],function(index, value) {
+                        if(value.subj_id == subject_id) {
+                            mark = value.mark;
+                            console.log(value);
+                            subj = value.subject;
+                        }
+                    });
+
+
+                    var form = $('<form>').attr('id', 'add-res')
+                        .append(
+                            $('<input>')
+                                                .attr('type', 'hidden')
+                                                .attr('name', 'csrfmiddlewaretoken')
+                                                .attr('value', csrf),
+                            $('<fieldset>')
+                                .append(
+                                    $('<div>').attr('class', 'panel panel-primary panel-heading')
+                                        .append(
+                                            $('<legend>').append($('<h2>').text(res['student'])),
+                                            $('<div>').attr('class', 'panel-title').text(subj),
+                                            $('<input>')
+                                                .attr('type', 'hidden')
+                                                .attr('class', 'panel-body')
+                                                .prop('readonly', true)
+                                                .attr('name', 'person').attr('value', student_id),
+                                            $('<input>')
+                                                .attr('type', 'hidden')
+                                                .attr('class', 'panel-body')
+                                                .prop('readonly', true)
+                                                .attr('name', 'subject').attr('value', subject_id),
+                                            $('<input>')
+                                                .attr('type', 'text')
+                                                .attr('class', 'panel-body')
+                                                .attr('name', 'mark')
+                                                .prop("required", true)
+                                                .attr('value', mark)
+
+                                        )));
+
+                    self.setContent(form);
+                }).fail(function () {
+                    self.setContent('Something went wrong.');
+                });
+            },
+                buttons: {
+                'Редагувати': {
+                    action: function () {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: $('#add-res').serialize(),
+                        success: function (response, data) {
+                            console.log('bla-bla', $(this).attr('data-student-id'));
+                            localStorage.setItem('result', response.success);
+                                if(response.success){
+                                    localStorage.setItem('message', 'Оцінку змінено успішно');
+                                    location.reload();
+                                }
+                                else{
+                                    localStorage.setItem('message', 'Пробеми зі зміною оцінки');
+                                    location.reload();
+                                }
+                        }
+                    });
+                }},
+                'Відхилити':{
+                    action: function () {
+                        toastr.info('Редагування відмінено користувачем');
                     }
                 }
 
