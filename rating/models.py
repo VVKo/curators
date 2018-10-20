@@ -2,6 +2,25 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+semester_list = ['перший семестр',
+                 'другий семестр',
+                 'третій семестр',
+                 'четвертий семестр',
+                 "п'ятий семестр",
+                 'шостий семестр',
+                 'сьомий семестр',
+                 'восьмий семестр']
+
+subject_CHOICES = tuple((str(i+1), semester_list[i]) for i in range(len(semester_list)))
+
+type_list = ['лекція',
+             'лабор. заняття',
+             'практ. заняття',
+             'семін. заняття']
+
+type_list_CHOICES = tuple((str(i+1), type_list[i]) for i in range(len(type_list)))
+
+
 class Group(models.Model):
     name = models.CharField(max_length=3)
     curator = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
@@ -127,11 +146,24 @@ class Student(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=100, blank=False)
-    semester = models.CharField(max_length=1, choices=(('1', 'перший семестр'), ('2', 'другий семестр')))
+    semester = models.CharField(max_length=1, choices=subject_CHOICES)
+
+    subject_type = models.CharField(max_length=1, choices=type_list_CHOICES,
+                                    default='')
+
+    duration = models.IntegerField(blank=False, default=0)
+
     group = models.ForeignKey(Group, on_delete=models.CASCADE, default='')
 
     def __str__(self):
-        return "{} {}".format(self.name, self.semester)
+        return "{} {} семестр, {} ({} год)".format(self.name, self.semester,
+                                                   self.get_subject_type, self.duration)
+
+    @property
+    def get_subject_type(self):
+        if self.subject_type == '':
+            return '-'
+        return type_list[int(self.subject_type)-1]
 
     @property
     def serialize(self):

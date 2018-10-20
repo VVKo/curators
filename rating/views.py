@@ -3,6 +3,7 @@ from urllib.parse import parse_qsl, parse_qs
 from django.contrib.auth import authenticate as authen
 from django.contrib.auth import login as login_test
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -48,14 +49,20 @@ def group(request):
         if user:
             if user.is_active:
                 login_test(request, user)
-                gr = Group.objects.get(curator=user.id)
+                try:
+                    gr = Group.objects.get(curator=user.id)
+                except ObjectDoesNotExist:
+                    return redirect('dashboard')
 
                 return render(request, 'rating/group.html', {'group': gr})
         else:
             return redirect('groups')
 
     if request.user.is_authenticated:
-        gr = Group.objects.get(curator=request.user.id)
+        try:
+            gr = Group.objects.get(curator=request.user.id)
+        except ObjectDoesNotExist:
+            return redirect('dashboard')
         return render(request, 'rating/group.html', {'group': gr})
     else:
         return render(request,
@@ -162,9 +169,22 @@ def login_view(request, *args, **kwargs):
 
 
 def index(request):
+    if request.user.username == 'admin':
+        return redirect('dashboard')
     return render(
         request,
         'rating/index.html',
+        {}
+    )
+
+
+def dashboard(request):
+    if request.user.username != 'admin':
+        return redirect('groups')
+
+    return render(
+        request,
+        'rating/dashboard.html',
         {}
     )
 

@@ -42,9 +42,16 @@
 
 {% block main %}
 
-     <h2 class="h5">Куратор: <b>{{ group.curator }}</b></h2>
+     <div class="h5">Куратор: <u><b>{{ group.curator }}</b></u></div>
+
+    <div class="h1">Успішність</div>
 
      <div id="studentsDiv"></div>
+
+    <div class="h1">Відвідування</div>
+    <div class="h3">1 семестр</div>
+    <div id="studentsDivFirstSemester"></div>
+    <div class="h3">2 семестр</div>
 
 
 {% endblock %}

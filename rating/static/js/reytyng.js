@@ -128,15 +128,18 @@ function table_group_detail(url, group) {
 			success: function(res){
 				var div = $('<div>')
                     .attr('class', 'table-responsive')
-                    .append($('<table>')
-        .attr('class', 'table table-striped table-sm')
-        .append(
-            $('<thead>')
-                .append(
-                    $('<tr>')
-                        .append(
-                            $('<th>').text('#'),
-                            $('<th>').text('ПІП')
+                    .append(
+                        $('<table>')
+                            .attr('class', 'table table-striped table-sm')
+                            .append(
+                                $('<caption>').text('Заголовок'))
+                            .append(
+                                $('<thead>')
+                                    .append(
+                                        $('<tr>')
+                                            .append(
+                                                $('<th>').text('#'),
+                                                $('<th>').text('ПІП')
 
                         )
                 ),

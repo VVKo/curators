@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index, name='groups'),
+    path(r'dashboard/', views.dashboard, name='dashboard'),
     # path(r'login/', views.login_view, name='logout'),
     # path(r'login/', auth_views.login, {'authentication_form': CustomAuthenticationForm}, name='login'),
     path(r'logout/', views.logout_view, {'next_page': '/'}, name='logout'),
